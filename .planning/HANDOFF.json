@@ -1,30 +1,29 @@
 {
   "version": "1.0",
-  "timestamp": "2026-04-21T14:04:33.645Z",
-  "phase": "3",
-  "phase_name": "skill-2-过程跟进专家",
+  "timestamp": "2026-04-21T15:46:41.000Z",
+  "phase": "03",
+  "phase_name": "Skill 2 过程跟进专家",
   "phase_dir": ".planning/phases/phase-03-skill-2",
-  "plan": null,
-  "task": null,
-  "total_tasks": null,
-  "status": "ready_to_plan",
-  "completed_tasks": [],
-  "remaining_tasks": [
-    {"id": 1, "name": "Plan Phase 3", "status": "not_started"},
-    {"id": 2, "name": "Execute Phase 3 plans", "status": "not_started"},
-    {"id": 3, "name": "Verify Phase 3", "status": "not_started"}
+  "plan": 3,
+  "task": 3,
+  "total_tasks": 3,
+  "status": "completed",
+  "completed_tasks": [
+    {"id": 1, "name": "Create SKILL.md, extend okr-types.ts, create snapshots/.gitignore, config.json", "status": "done", "commit": "9db7b65"},
+    {"id": 2, "name": "Create step1-trigger.md, step2-data-collect.md, step3-progress-compare.md", "status": "done", "commit": "9db7b65"},
+    {"id": 3, "name": "Create step4-risk-detect.md, step5-coaching-advice.md, risk-alert-template.md", "status": "done", "commit": "9db7b65"}
   ],
+  "remaining_tasks": [],
   "blockers": [],
-  "human_actions_pending": [],
+  "human_actions_pending": [
+    {"action": "配置 lark-cli IM scopes", "context": "消息发送需要 im:message scope，Phase 3 完成后需运行 lark-cli auth login --scope \"im:message\"", "blocking": false}
+  ],
   "decisions": [
-    {"decision": "客户端-服务端机制，Phase 3 只做提醒", "rationale": "用户主动触发不现实，但完整服务端后续做", "phase": "3"},
-    {"decision": "自动查询 OKR 系统数据", "rationale": "用户不需要手动补充材料", "phase": "3"},
-    {"decision": "与计划基线对比", "rationale": "检查是否按设定期里程碑推进", "phase": "3"},
-    {"decision": "LLM 综合判断风险", "rationale": "不做硬编码阈值", "phase": "3"},
-    {"decision": "同时推送员工+主管", "rationale": "双方都需要知情", "phase": "3"},
-    {"decision": "双周+智能跳过", "rationale": "有更新则跳过提醒", "phase": "3"}
+    {"decision": "使用 config.json 本地文件解析主管 ID", "rationale": "Resolved Q1 — 最简方案，无需服务端依赖", "phase": "03"},
+    {"decision": "智能跳过检查使用 ANY KR update_time > lastReminderTimestamp", "rationale": "Resolved Q3 — 即使分数没变，用户更新了内容说明有参与度", "phase": "03"},
+    {"decision": "LLM 风险判断不使用硬编码阈值", "rationale": "D-14 — 综合完成度变化幅度、备注内容质量等因素", "phase": "03"}
   ],
   "uncommitted_files": [],
-  "next_action": "/gsd-plan-phase 3",
-  "context_notes": "Phase 1 and 2 complete. Phase 3 CONTEXT.md created with 10 decisions (D-09 to D-18). Ready for planning."
+  "next_action": "Phase 3 已完成。下一步可执行 /gsd-execute-phase 4（Skill 3 评审评分专家）",
+  "context_notes": "Phase 1-3 全部完成。项目已从 /Users/garyge/claude-workspace 迁移到 /Users/garyge/okrskill。Skills 安装位置：~/.claude/skills/okr-shared、okr-goal-setting、okr-process-tracking。迁移时已清理旧位置文件。"
 }
