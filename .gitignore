@@ -1,4 +1,26 @@
-okr-shared/
-okr-goal-setting/
-okr-process-tracking/
-okr-review-scoring/
+# Sensitive config files
+**/config.json
+
+# Snapshot data (contains user OKR data)
+**/snapshots/*.json
+
+# Reports (may contain user data)
+**/reports/*
+!.gitkeep
+
+# Environment files
+**/.env*
+
+# Claude/IDE specific
+**/.claude/
+**/.continue-here*
+**/.continue*
+
+# OS files
+.DS_Store
+
+# Node
+node_modules/
+
+# Build artifacts
+*.tsbuildinfo

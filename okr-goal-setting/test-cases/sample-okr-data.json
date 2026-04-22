@@ -1,0 +1,87 @@
+{
+  "userId": "test-user-001",
+  "jobCategory": "研发",
+  "currentCycle": {
+    "id": "cycle-2026-q2",
+    "name": "2026年Q2",
+    "startTime": "2026-04-01",
+    "endTime": "2026-06-30",
+    "status": "published"
+  },
+  "draftObjective": {
+    "title": "提升系统稳定性",
+    "description": "优化核心服务的运行稳定性，减少故障发生频率，提高用户满意度"
+  },
+  "historicalCycles": [
+    {
+      "id": "cycle-2025-q4",
+      "name": "2025年Q4",
+      "status": "archived",
+      "objectives": [
+        {
+          "id": "obj-q4-001",
+          "title": "完成微服务架构改造",
+          "description": "将单体应用拆分为微服务架构",
+          "score": 0.65,
+          "keyResults": [
+            {"id": "kr-001", "title": "完成用户服务拆分", "score": 0.8},
+            {"id": "kr-002", "title": "完成订单服务拆分", "score": 0.5}
+          ]
+        },
+        {
+          "id": "obj-q4-002",
+          "title": "优化CI/CD流程",
+          "description": "提升构建和部署效率",
+          "score": 0.9,
+          "keyResults": [
+            {"id": "kr-003", "title": "构建时间缩短50%", "score": 0.95},
+            {"id": "kr-004", "title": "部署频率提升至每日2次", "score": 0.85}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cycle-2026-q1",
+      "name": "2026年Q1",
+      "status": "completed",
+      "objectives": [
+        {
+          "id": "obj-q1-001",
+          "title": "系统性能优化",
+          "description": "提升系统响应速度和吞吐量",
+          "score": 0.75,
+          "keyResults": [
+            {"id": "kr-005", "title": "P99延迟降低到200ms", "score": 0.7},
+            {"id": "kr-006", "title": "QPS提升至5000", "score": 0.8}
+          ]
+        },
+        {
+          "id": "obj-q1-002",
+          "title": "完成技术债务清理",
+          "description": "解决历史遗留的技术问题",
+          "score": 0.45,
+          "keyResults": [
+            {"id": "kr-007", "title": "消除所有SonarQube阻断级问题", "score": 0.6},
+            {"id": "kr-008", "title": "代码覆盖率提升至80%", "score": 0.3}
+          ]
+        }
+      ]
+    }
+  ],
+  "alignments": [
+    {
+      "alignment_id": "align-001",
+      "type": "contributing",
+      "target_objective_id": "obj-mgr-001",
+      "target_objective_title": "提升研发效率",
+      "target_owner_name": "张三"
+    },
+    {
+      "alignment_id": "align-002",
+      "type": "dependent",
+      "target_objective_id": "obj-peer-001",
+      "target_objective_title": "前端重构",
+      "target_owner_name": "李四"
+    }
+  ]
+}
