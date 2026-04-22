@@ -1,7 +1,12 @@
 ---
 name: okr-process-tracking
-description: OKR过程跟进专家 — 5步工作流实现双周OKR过程跟进，采集飞书+Git数据，对比上次进度，识别风险，生成提醒和辅导建议
-version: 1.0.0
+description: >
+  USE when: doing biweekly OKR progress check-ins, comparing current progress
+    against baseline, identifying risk KRs, or generating reminders for employees
+    and managers.
+  DON'T USE when: setting new OKR goals (use okr-goal-setting) or doing
+    end-of-period review scoring (use okr-review-scoring).
+version: 1.1.0
 ---
 
 # OKR Process Tracking — OKR过程跟进专家
@@ -20,13 +25,13 @@ version: 1.0.0
 
 ## 5步工作流
 
-| 步骤 | 名称 | 说明 | 工作流文件 |
-|------|------|------|------|
-| Step 1 | 触发检查 | 验证lark-cli认证，识别当前活跃OKR周期，智能跳过检查（D-17） | `workflows/step1-trigger.md` |
-| Step 2 | 数据采集 | 自动查询OKR系统数据（完成度、备注、KR进展记录），无需用户手动补充（D-10） | `workflows/step2-data-collect.md` |
-| Step 3 | 进展对比 | 与本地基线快照对比，计算各KR得分变化（D-13） | `workflows/step3-progress-compare.md` |
-| Step 4 | 风险识别 | LLM综合判断，输出on_track（有进展）/no_progress（无进展）（D-14） | `workflows/step4-risk-detect.md` |
-| Step 5 | 辅导建议 | 生成员工提醒（友好语气）+ 主管汇报（正式语气），预览确认后发送（D-15, D-16） | `workflows/step5-coaching-advice.md` |
+| 步骤 | 名称 | 说明 |
+|------|------|------|
+| Step 1 | 触发检查 | 验证认证状态，识别当前活跃OKR周期，智能跳过检查 |
+| Step 2 | 数据采集 | 自动查询OKR系统数据（完成度、备注、KR进展记录） |
+| Step 3 | 进展对比 | 与基线快照对比，计算各KR得分变化 |
+| Step 4 | 风险识别 | LLM综合判断，输出 on_track（有进展）/no_progress（无进展） |
+| Step 5 | 辅导建议 | 生成员工提醒（友好语气）+ 主管汇报（正式语气），预览确认后发送 |
 
 ## 交互模式
 
@@ -60,32 +65,47 @@ version: 1.0.0
 
 ## 使用方法
 
-1. 用户提供自己的飞书 userID
-2. Skill 自动验证认证状态，识别当前活跃周期
+1. 用户触发 Skill
+2. Skill 自动识别当前用户和活跃OKR周期
 3. 引导用户完成5步工作流
 
 示例：
 ```
 我需要用okr-process-tracking跟进本季度OKR进度
-我的userID是: user-123456
 ```
 
 ## 数据来源
 
 | 数据源 | 获取方式 | 用途 |
 |--------|----------|------|
-| 飞书OKR | `lark-cli okr` | OKR周期/目标/关键结果/进度数据 |
-| 本地快照 | `~/.claude/skills/okr-process-tracking/snapshots/` | 基线进度快照（JSON） |
-| 飞书消息 | `lark-cli im` | 提醒消息发送 |
+| 飞书OKR | 平台OKR API | OKR周期/目标/关键结果/进度数据 |
+| 本地快照 | `snapshots/` 目录 | 基线进度快照（JSON） |
+| 飞书消息 | 平台消息API | 提醒消息发送 |
+
+### 平台适配
+
+| 平台 | 用户身份获取 | OKR数据获取 | 消息发送 |
+|------|-------------|-------------|----------|
+| Claude Code | 用户提供 userID + lark-cli | `lark-cli okr` | `lark-cli im` |
+| OpenClaw（飞书） | 自动识别当前用户 open_id | 飞书 OKR API 直调 | 飞书消息 API |
 
 ## 配置
 
-主管 ID 配置在 `~/.claude/skills/okr-process-tracking/config.json` 的 `managerId` 字段中。首次运行时如未配置，会提示用户填写；留空则跳过主管端消息发送。
+主管 ID 配置在 `config.json` 的 `managerId` 字段中。首次运行时如未配置，会提示用户填写；留空则跳过主管端消息发送。
 
 ## 范围说明
 
-Phase 3 仅实现提醒跟进功能。客户端-服务端自动触发机制（D-09）预留接口，后续实现。
+当前版本仅实现提醒跟进功能。客户端-服务端自动触发机制后续实现。
 
 ## 风险提醒模板
 
-风险提醒消息使用 `~/.claude/skills/okr-process-tracking/templates/risk-alert-template.md` 模板，包含员工端（友好提醒）和主管端（正式汇报）两种格式。
+风险提醒消息使用 `templates/risk-alert-template.md` 模板，包含员工端（友好提醒）和主管端（正式汇报）两种格式。
+
+## 权限要求
+
+| 权限 | 用途 |
+|------|------|
+| `okr:okr.period:readonly` | 读取OKR周期列表 |
+| `okr:okr.content:readonly` | 读取OKR目标、关键结果、进度数据 |
+| `im:message` | 发送提醒消息给员工和主管 |
+| `contact:user.base:readonly` | 获取用户基本信息 |

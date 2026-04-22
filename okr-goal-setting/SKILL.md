@@ -1,7 +1,11 @@
 ---
 name: okr-goal-setting
-description: OKR目标设定专家 — 5步工作流辅助用户设定符合SMART原则的OKR目标，检查上下级对齐，给出修改建议
-version: 1.0.0
+description: >
+  USE when: setting quarterly OKR goals that need SMART validation, alignment
+    checks with manager/peers, or modification suggestions before publishing.
+  DON'T USE when: OKR goals are already set and you need progress tracking
+    (use okr-process-tracking) or end-of-period review scoring (use okr-review-scoring).
+version: 1.1.0
 ---
 
 # OKR Goal Setting — OKR目标设定专家
@@ -68,27 +72,32 @@ version: 1.0.0
 
 ## 使用方法
 
-1. 用户提供自己的飞书 userID
-2. Skill 自动从飞书OKR系统拉取用户历史OKR数据
-3. 自动识别用户的岗位类型（研发/产品/测试/管理）
-4. 引导用户完成5步工作流
+1. 用户触发 Skill（Claude Code: 输入技能名；OpenClaw: 从技能面板选择）
+2. Skill 自动获取当前用户身份和岗位类型
+3. 引导用户完成5步工作流
 
 示例：
 ```
 我需要用okr-goal-setting设定本季度OKR
-我的userID是: user-123456
 ```
 
 ## 数据来源
 
 | 数据源 | 获取方式 | 用途 |
 |--------|----------|------|
-| 飞书OKR | `lark-cli okr` | OKR周期/目标/关键结果/对齐关系 |
-| 飞书文档 | `lark-cli docs` | 用户自述文档（Step 1背景收集） |
+| 飞书OKR | 平台OKR API | OKR周期/目标/关键结果/对齐关系 |
+| 飞书文档 | 平台文档API | 用户自述文档（Step 1背景收集） |
+
+### 平台适配
+
+| 平台 | 用户身份获取 | OKR数据获取 |
+|------|-------------|-------------|
+| Claude Code | 用户提供 userID + lark-cli | `lark-cli okr` |
+| OpenClaw（飞书） | 自动识别当前用户 open_id | 飞书 OKR API 直调 |
 
 ### 历史OKR自动拉取
 
-用户只需提供 userID，Skill 会通过 `lark-cli okr cycle-list --user-id` 自动拉取历史OKR数据，包括：
+Skill 会自动拉取用户历史OKR数据，包括：
 - 历史周期数和完成状态
 - 未完成目标（得分 < 0.7）
 - 重复目标（相似标题跨周期出现）
@@ -99,3 +108,14 @@ version: 1.0.0
 ### 岗位自动识别
 
 用户身份和岗位类型从飞书OKR系统自动识别，无需用户手动选择。Skill 会从 OKR 响应中提取部门/岗位信息，映射到4类岗位权重（研发/产品/测试/管理）。若无法自动判断，会提示用户确认。
+
+## 权限要求
+
+使用本 Skill 需要以下飞书权限：
+
+| 权限 | 用途 |
+|------|------|
+| `okr:okr.period:readonly` | 读取OKR周期列表 |
+| `okr:okr.content:readonly` | 读取OKR目标、关键结果、对齐关系 |
+| `contact:user.base:readonly` | 获取用户基本信息（岗位识别） |
+| `contact:user.employee_id:readonly` | 获取组织架构关系（上级/平级识别） |
