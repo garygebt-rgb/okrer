@@ -68,6 +68,9 @@ progress:
 ## Pending Todos
 
 - [上传代码到 GitHub](.planning/todos/pending/2026-04-22-bug-github.md) — 等 bug 修复完毕并验证可用后，排除敏感文件推送到 GitHub
+- [飞书 openclaw 集成](.planning/todos/pending/2026-04-22-openclaw.md) — 评估三个 OKR Skills 能否在飞书 openclaw 中运行，需要哪些改造
+- [Skill 1 OpenClaw适配](.planning/todos/pending/2026-04-22-skill1-openclaw.md) — 自动识别用户/主管身份、上级平级目标关联纠偏、权限声明
+- [GitHub仓库全面改造为OpenClaw格式](.planning/todos/pending/2026-04-22-github-openclaw.md) — 三个SKILL.md改格式、目录结构调整、飞书权限声明、README
 
 ## 风险
 
