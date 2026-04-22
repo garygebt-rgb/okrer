@@ -4,6 +4,23 @@ plan: 01
 subsystem: skill-definition-and-parsing-modules
 tags: [okr, review-scoring, skill, lark-cli, screenshot-parsing, doc-parsing]
 
+must_haves:
+  truths:
+    - "Skills live at ~/.claude/skills/, not in project repo"
+    - "6-step workflow: material-collect, data-validate, evidence-match, score-calc, doc-parse, report-gen"
+    - "Review scoring = difficulty 40% + effort 40% + completion 20% (project standard)"
+    - "Scores are suggestions only — human makes final decision"
+  artifacts:
+    - "~/.claude/skills/okr-review-scoring/SKILL.md"
+    - "~/.claude/skills/okr-review-scoring/workflows/step1-material-collect.md"
+    - "~/.claude/skills/okr-review-scoring/modules/screenshot-parser.ts"
+    - "~/.claude/skills/okr-review-scoring/modules/doc-parser.ts"
+  key_links:
+    - "04-CONTEXT.md — Phase boundary, locked decisions D-19 through D-29"
+    - "04-RESEARCH.md — Domain research, pitfalls, code examples"
+    - "okr-shared/scoring-engine.ts — Existing weighted scoring engine"
+    - "okr-shared/evidence-matcher.ts — 5-dimension evidence matching"
+
 # Dependency graph
 requires:
   - phase: 01-shared-data-layer

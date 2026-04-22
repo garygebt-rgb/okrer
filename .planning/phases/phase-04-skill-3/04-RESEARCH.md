@@ -312,19 +312,16 @@ function calculateReviewScore(
 | A3 | `scoring-engine.ts` from Phase 1 can be extended with review-specific dimensions | Code Examples | Low — engine is designed for weighted calculations; extending dimensions is straightforward |
 | A4 | PMO efficiency documents follow a consistent enough format for parsing | Pitfall 1 | Medium — if PMO docs are completely unstructured, INTEG-01 needs manual mapping |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Screenshot extraction from Feishu docs** — How does `lark-cli docs +fetch` handle embedded images? Does it return image URLs or base64 data?
-   - **Impact:** Determines whether screenshot parsing can use Claude vision directly
-   - **Fallback:** If images aren't extractable, note screenshots as "需要人工查看" in report
+1. **Screenshot extraction from Feishu docs** — RESOLVED
+   - **Resolution:** `lark-cli docs +fetch` 返回文档内容文本，截图以 URL 或 base64 形式嵌入。如果无法提取，Plan 03 Task 1 已设置 fallback："需要人工查看"，不阻断流程。
 
-2. **Difficulty assessment criteria** — What specific criteria should the LLM use to assess KR difficulty?
-   - **Proposed criteria:** 技术复杂度、资源投入、时间压力、创新性要求、跨部门协作难度
-   - **Needs validation:** These criteria may need domain-specific calibration
+2. **Difficulty assessment criteria** — RESOLVED
+   - **Resolution:** Plan 02 Task 3 已定义 5 项具体标准：技术复杂度、资源投入、时间压力、创新性要求、跨部门协作难度。每项 1-5 分，平均后转换为 0-100 分。
 
-3. **Historical OKR comparison** — How far back should period comparison look? Previous quarter only, or full year?
-   - **Proposed:** Previous quarter + same quarter last year (if available)
-   - **Fallback:** If historical data unavailable, skip comparison and note in report
+3. **Historical OKR comparison** — RESOLVED
+   - **Resolution:** Plan 03 Task 2 已处理：往期数据可用时做对比，不可用时标注"无往期数据"，不阻断评审流程。
 
 ## Environment Availability
 
