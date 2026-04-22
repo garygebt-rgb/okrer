@@ -146,6 +146,12 @@ Plans:
 - Bug修复清单
 - 用户反馈收集
 
+**Plans:** 2 plans
+
+Plans:
+- [ ] 05-01-PLAN.md — End-to-end workflow testing of all 3 Skills with real OKR data
+- [ ] 05-02-PLAN.md — Integration test report, bug fix list, user feedback summary
+
 **UI hint:** no
 
 ---
@@ -185,4 +191,4 @@ Plans:
 **覆盖率: 27/27 = 100%**
 
 ---
-*Last updated: 2026-04-21*
+*Last updated: 2026-04-22*
