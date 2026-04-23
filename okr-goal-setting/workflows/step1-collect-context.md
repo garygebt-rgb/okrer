@@ -2,13 +2,35 @@
 
 **目标：** 获取用户身份信息、岗位类型、往期OKR分析数据，为后续SMART验证和对齐检查提供上下文。
 
-**前置条件：** 用户提供飞书 userID
+**前置条件：** 运行环境检测 + 用户身份识别
 
 **下一步：** Step 2 — SMART验证
 
+## 环境检测
+
+本步骤首先检测运行环境：
+- 如果 `process.env.OPENCLAW=1` → 进入 **OpenClaw 路径**（飞书智能伙伴模式）
+- 否则 → 进入 **CLI 路径**（Claude Code + lark-cli 模式）
+
 ## 输入
 
-- `userID` — 用户的飞书用户ID（必须）
+- `userID` — 用户的飞书用户ID（CLI 路径必须，OpenClaw 路径不需要）
+
+## CLI 自检（仅 CLI 路径）
+
+在执行数据采集前，`okr-shared/data-collector.ts` 自动执行以下检查：
+1. 检查 `lark-cli` 是否已安装
+2. 检查授权状态和 token 有效性
+3. 检查所需 scope 是否齐全
+
+检查失败时会输出用户友好的引导信息，而非原始错误。
+
+### OpenClaw 路径（飞书智能伙伴）
+
+本步骤在 OpenClaw 环境下不执行代码调用，而是向智能伙伴发出以下指令：
+> "请读取我的飞书 OKR 周期列表，返回以下字段：cycle_id, name, start_date, end_date, status。以 JSON 数组格式返回。"
+
+智能伙伴自动识别当前用户身份，返回结果后继续后续步骤。
 
 ## 执行步骤
 

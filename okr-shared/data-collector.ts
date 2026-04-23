@@ -15,13 +15,22 @@ import {
   DataFilter,
   CycleStatus,
 } from './okr-types';
+import { ensureLarkCli } from './lark-cli-checker';
 
 // ============================================================
 // 飞书CLI 数据采集团装
 // ============================================================
 
+/** CLI 是否已初始化检查 */
+let cliInitialized = false;
+
 /** 飞书CLI命令执行器 */
 function runLarkCommand(args: string): string {
+  // 首次调用时执行自检（仅 CLI 模式）
+  if (!cliInitialized) {
+    ensureLarkCli();
+    cliInitialized = true;
+  }
   try {
     return execSync(`lark-cli ${args}`, {
       encoding: 'utf-8',

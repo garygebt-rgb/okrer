@@ -43,6 +43,13 @@
 
 此步骤完全自动化（D-10, D-11）。不需要用户手动输入数据。所有数据来自 lark-cli OKR 查询。
 
+### OpenClaw 路径（飞书智能伙伴）
+
+在 OpenClaw 环境下，向智能伙伴发出以下指令：
+> "请读取我 OKR 周期 {cycleId} 的详细信息，包括所有目标和关键结果，以 JSON 格式返回。"
+
+智能伙伴自动识别当前用户身份，返回结果后继续后续步骤。
+
 ## 输出
 
 Map: `keyResultId → { title, score, description, update_time, objectiveTitle }`

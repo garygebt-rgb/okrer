@@ -93,7 +93,19 @@ version: 1.1.0
 | 平台 | 用户身份获取 | OKR数据获取 |
 |------|-------------|-------------|
 | Claude Code | 用户提供 userID + lark-cli | `lark-cli okr` |
-| OpenClaw（飞书） | 自动识别当前用户 open_id | 飞书 OKR API 直调 |
+| OpenClaw（飞书） | 智能伙伴自动识别当前用户 | 智能伙伴执行（见 `openclaw-lark-instructions.md`） |
+
+### 环境检测
+
+本 Skill 自动检测运行环境：
+- 如果 `process.env.OPENCLAW=1` → 使用飞书智能伙伴模式
+- 否则 → 使用 Claude Code + lark-cli 模式
+
+在飞书智能伙伴模式下：
+- 不需要安装 lark-cli
+- 不需要用户提供 userID（智能伙伴自动识别）
+- 所有飞书操作通过自然语言指令由智能伙伴完成
+- 具体指令格式参考 `okr-shared/openclaw-lark-instructions.md`
 
 ### 历史OKR自动拉取
 

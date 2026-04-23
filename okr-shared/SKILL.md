@@ -138,4 +138,25 @@ import { collectMgmtEvidence } from './evidence-strategies/mgmt-evidence';
 | 平台 | OKR数据 | 文档数据 | 消息数据 | Git分析 |
 |------|---------|----------|----------|---------|
 | Claude Code | `lark-cli okr` | `lark-cli docs` | `lark-cli im` | 本地 git log |
-| OpenClaw（飞书） | 飞书 API 直调 | 飞书文档 API | 飞书消息 API | GitLab API |
+| OpenClaw（飞书） | 智能伙伴执行 | 智能伙伴执行 | 智能伙伴执行 | GitLab API 或用户提供 |
+
+### 环境检测
+
+本模块自动检测运行环境：
+- 如果 `process.env.OPENCLAW=1` → 使用飞书智能伙伴模式（所有飞书操作通过自然语言指令由智能伙伴完成，详见 `openclaw-lark-instructions.md`）
+- 否则 → 使用 Claude Code + lark-cli 模式
+
+在飞书智能伙伴模式下：
+- 不需要安装 lark-cli
+- 不需要用户提供 userID（智能伙伴自动识别）
+- 所有飞书操作通过自然语言指令由智能伙伴完成
+- 具体指令格式参考 `openclaw-lark-instructions.md`
+
+### CLI 自检（Claude Code 模式）
+
+首次调用数据采集时自动执行以下检查：
+1. 检查 `lark-cli` 是否已安装
+2. 检查授权状态和 token 有效性
+3. 检查所需 scope 是否齐全
+
+检查失败时会输出用户友好的引导信息，而非原始错误。
