@@ -24,32 +24,149 @@ metadata:
 
 辅助管理者确保OKR目标设定合理、上下级对齐清晰、符合SMART原则。飞书智能伙伴环境下自动识别用户身份和主管信息，检查上级/平级同期目标关联纠偏。不计算完整KPI评分，只辅助20%季度任务目标部分的目标设定。
 
-## ⚠️ 安装检测与飞书CLI备用方案
+## ⚠️ Init 命令（必须先执行）
 
-### 飞书CLI安装检测
-
-**执行Skill前必须检测飞书CLI是否已安装：**
-
-```bash
-# 检测飞书CLI是否安装
-lark-cli --version
-```
-
-**如果未安装，引导用户安装：**
+**执行本 Skill 前必须先运行 init 命令进行环境检测和初始化：**
 
 ```
-检测到飞书CLI未安装，需要先安装飞书CLI才能获取OKR数据。
+/okr-goal-setting-init
+```
+
+或自然语言：
+```
+帮我初始化OKR目标设定环境
+```
+
+### Init 命令执行内容
+
+Init 命令会自动完成以下检测和配置：
+
+| 序号 | 检测项 | 说明 | 失败处理 |
+|------|--------|------|----------|
+| 1 | 飞书CLI安装检测 | `lark-cli --version` | 引导安装（见下方安装步骤） |
+| 2 | 飞书CLI权限检测 | `lark-cli auth check --scopes "okr:okr.period:readonly,okr:okr.content:readonly"` | 引导授权 `lark-cli auth login --recommend` |
+| 3 | 用户身份识别 | 获取 open_id、姓名、部门、岗位 | 提示确认飞书智能伙伴权限 |
+| 4 | 组织架构获取 | 获取主管 open_id、平级同事列表 | 提示用户手动提供主管姓名 |
+| 5 | 当前OKR周期获取 | 获取活跃周期及其目标/KR | 提示用户确认是否已创建OKR |
+| 6 | 主管/平级OKR预加载 | 获取主管和同事的同期OKR | 标记为"预加载失败，Step 3需手动提供" |
+
+### Init 输出示例
+
+```
+## OKR目标设定环境初始化
+
+### 环境检测结果
+
+| 检测项 | 状态 | 说明 |
+|--------|------|------|
+| 飞书CLI安装 | ✅ 已安装 | v1.0.4 |
+| OKR读取权限 | ✅ 已授权 | okr:okr.period:readonly, okr:okr.content:readonly |
+| 用户联系人权限 | ✅ 已授权 | contact:user.base:readonly |
+| 组织架构权限 | ✅ 已授权 | contact:user.employee_id:readonly |
+
+### 用户身份
+
+| 信息 | 值 |
+|------|------|
+| 姓名 | 张三 |
+| 部门 | 技术部-研发中心 |
+| 岗位 | 研发工程师 |
+| open_id | ou_xxxx |
+
+### 组织架构
+
+| 信息 | 值 |
+|------|------|
+| 主管 | 李四（研发总监） |
+| 平级同事 | 王五、赵六（共2人） |
+
+### 当前OKR周期
+
+| 信息 | 值 |
+|------|------|
+| 周期 | 2026-Q2 |
+| 状态 | draft（草稿） |
+| 目标数 | 3个 |
+| KR数 | 9个 |
+
+### 预加载结果
+
+| 信息 | 状态 |
+|------|------|
+| 主管OKR | ✅ 已加载（2个目标） |
+| 平级OKR | ✅ 已加载（2位同事共4个目标） |
+
+### 环境完整度: 100%
+
+✅ 所有检测项通过，可以开始目标设定流程。
+
+回复"继续"开始 Step 1 背景收集，或"取消"放弃。
+```
+
+### Init 失败处理示例
+
+```
+## OKR目标设定环境初始化
+
+### 环境检测结果
+
+| 检测项 | 状态 | 说明 |
+|--------|------|------|
+| 飞书CLI安装 | ❌ 未安装 | 需要安装 |
+| OKR读取权限 | ⚠️ 未检测 | CLI未安装 |
+| 用户身份 | ⚠️ 待识别 | 需先安装CLI |
+
+### 需要安装飞书CLI
 
 安装步骤：
-1. 安装飞书CLI: npm install -g @larksuite/cli
-2. 安装Skills: npx skills add larksuite/cli -y -g
-3. 初始化配置: lark-cli config init --new
-4. 登录授权: lark-cli auth login --recommend
+1. npm install -g @larksuite/cli
+2. npx skills add larksuite/cli -y -g
+3. lark-cli config init --new
+4. lark-cli auth login --recommend
 
-请按以上步骤安装后，重新运行本Skill。
+安装完成后，重新运行 init 命令。
 ```
 
-### 数据获取策略：优先飞书智能伙伴，备用飞书CLI
+---
+
+## 飞书CLI安装指南
+
+**如果 init 检测到飞书CLI未安装，按以下步骤安装：**
+
+### 安装步骤
+
+```bash
+# Step 1: 安装飞书CLI（全局安装）
+npm install -g @larksuite/cli
+
+# Step 2: 安装配套Skills
+npx skills add larksuite/cli -y -g
+
+# Step 3: 初始化配置（创建飞书CLI应用）
+lark-cli config init --new
+# 会生成授权链接，复制到浏览器完成应用创建
+
+# Step 4: 登录授权（扫码授权）
+lark-cli auth login --recommend
+# 会生成授权链接，扫码授权获取必要权限
+```
+
+### 验证安装
+
+```bash
+# 检测安装
+lark-cli --version
+
+# 检测权限
+lark-cli auth check --scopes "okr:okr.period:readonly,okr:okr.content:readonly,contact:user.base:readonly,contact:user.employee_id:readonly"
+
+# 检测授权状态
+lark-cli auth status
+```
+
+---
+
+## 数据获取策略：优先飞书智能伙伴，备用飞书CLI
 
 **获取OKR数据时采用双策略：**
 

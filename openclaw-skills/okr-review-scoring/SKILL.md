@@ -27,20 +27,99 @@ metadata:
 
 实现期末OKR评审评分，**整合多源证据**：周报内容（来自 okr-weekly-tracker）、手动案例链接、飞书活动记录自动扫描、人效月报表数据。解析用户自述文档(含截图)，验证证据，计算评分，生成评审报告。不计算完整KPI评分，只提供评分建议供人类参考。
 
-## ⚠️ 安装检测与飞书CLI备用方案
+## ⚠️ Init 命令（必须先执行）
 
-### 飞书CLI安装检测
-
-**执行Skill前必须检测飞书CLI是否已安装：**
-
-```bash
-lark-cli --version
-```
-
-**如果未安装，引导用户安装：**
+**执行本 Skill 前必须先运行 init 命令进行环境检测和初始化：**
 
 ```
-检测到飞书CLI未安装，需要先安装才能获取OKR和飞书活动数据。
+/okr-review-init
+```
+
+或自然语言：
+```
+帮我初始化OKR评审评分环境
+```
+
+### Init 命令执行内容
+
+Init 命令会自动完成以下检测和配置：
+
+| 序号 | 检测项 | 说明 | 失败处理 |
+|------|--------|------|----------|
+| 1 | 飞书CLI安装检测 | `lark-cli --version` | 引导安装 |
+| 2 | OKR权限检测 | `okr:okr.period:readonly`, `okr:okr.content:readonly`, `okr:okr.indicator:readonly` | 引导授权 |
+| 3 | 文档权限检测 | `docs:doc:readonly` | 引导授权 |
+| 4 | 会议权限检测 | `vc:minute:readonly` | 引导授权 |
+| 5 | 聊天权限检测 | `im:message:readonly` | 引导授权 |
+| 6 | Wiki权限检测 | `wiki:wiki:readonly` | 引导授权 |
+| 7 | 用户身份识别 | 获取 open_id、姓名、部门、岗位 | 提示确认权限 |
+| 8 | 当前OKR周期获取 | 获取待评审周期的目标/KR/指标 | 提示确认周期 |
+| 9 | 周报文档搜索 | 搜索周期内的周报文档 | 标记"周报未生成" |
+| 10 | 人效月报表定位 | 搜索"人效月报"云文档 | 标记"人效表未找到" |
+
+### Init 输出示例
+
+```
+## OKR评审评分环境初始化
+
+### 环境检测结果
+
+| 检测项 | 状态 | 说明 |
+|--------|------|------|
+| 飞书CLI安装 | ✅ 已安装 | v1.0.4 |
+| OKR权限 | ✅ 已授权 | okr:okr.period:readonly, okr:okr.content:readonly, okr:okr.indicator:readonly |
+| 文档权限 | ✅ 已授权 | docs:doc:readonly |
+| 会议权限 | ✅ 已授权 | vc:minute:readonly |
+| 聊天权限 | ✅ 已授权 | im:message:readonly |
+| Wiki权限 | ✅ 已授权 | wiki:wiki:readonly |
+
+### 用户身份
+
+| 信息 | 值 |
+|------|------|
+| 姓名 | 张三 |
+| 部门 | 技术部-研发中心 |
+| 岗位 | 研发工程师 |
+| open_id | ou_xxxx |
+
+### 待评审周期
+
+| 信息 | 值 |
+|------|------|
+| 周期 | 2026-Q2 |
+| 状态 | completed（已完成） |
+| 目标数 | 3个 |
+| KR数 | 9个 |
+
+### 证据源预检
+
+| 证据源 | 状态 | 说明 |
+|--------|------|------|
+| 周报文档 | ✅ 已找到 | 12份周报（2026-04-01~2026-06-30） |
+| 飞书活动 | ⚠️ 待扫描 | Step 2 执行 |
+| 人效月报表 | ✅ 已找到 | PMO人效月报-2026-Q2 |
+
+### 环境完整度: 100%
+
+✅ 所有检测项通过，可以开始评审流程。
+
+回复"继续"开始 Step 1 材料收集，或"取消"放弃。
+```
+
+### Init 失败处理示例
+
+```
+## OKR评审评分环境初始化
+
+### 环境检测结果
+
+| 检测项 | 状态 | 说明 |
+|--------|------|------|
+| 飞书CLI安装 | ❌ 未安装 | 需要安装 |
+| OKR权限 | ⚠️ 未检测 | CLI未安装 |
+| 周报文档 | ❌ 未生成 | 建议先使用 okr-weekly-tracker |
+
+### 需要安装飞书CLI
 
 安装步骤：
 1. npm install -g @larksuite/cli
@@ -48,10 +127,54 @@ lark-cli --version
 3. lark-cli config init --new
 4. lark-cli auth login --recommend
 
-安装完成后重新运行本Skill。
+### 建议先运行 okr-weekly-tracker
+
+检测到当前周期未生成周报文档。建议先运行：
+/okr-weekly-init
+
+生成周报后再进行期末评审，可获得完整的努力度评分证据。
+
+安装完成后，重新运行 init 命令。
 ```
 
-### 数据获取策略：优先飞书智能伙伴，备用飞书CLI
+---
+
+## 飞书CLI安装指南
+
+**如果 init 检测到飞书CLI未安装，按以下步骤安装：**
+
+### 安装步骤
+
+```bash
+# Step 1: 安装飞书CLI
+npm install -g @larksuite/cli
+
+# Step 2: 安装配套Skills
+npx skills add larksuite/cli -y -g
+
+# Step 3: 初始化配置
+lark-cli config init --new
+
+# Step 4: 登录授权（需要评审所需全部权限）
+lark-cli auth login --recommend
+```
+
+### 验证安装
+
+```bash
+# 检测安装
+lark-cli --version
+
+# 检测评审所需权限
+lark-cli auth check --scopes "okr:okr.period:readonly,okr:okr.content:readonly,okr:okr.indicator:readonly,docs:doc:readonly,vc:minute:readonly,im:message:readonly,wiki:wiki:readonly"
+
+# 检测授权状态
+lark-cli auth status
+```
+
+---
+
+## 数据获取策略：优先飞书智能伙伴，备用飞书CLI
 
 | 数据类型 | 优先策略 | 备用策略（lark-cli） |
 |----------|----------|----------------------|
