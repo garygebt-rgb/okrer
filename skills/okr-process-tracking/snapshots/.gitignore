@@ -1,0 +1,3 @@
+# Local progress snapshots are not git-tracked
+# They are created at runtime by the skill
+*.json
