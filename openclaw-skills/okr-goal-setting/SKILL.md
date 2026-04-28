@@ -6,17 +6,89 @@ metadata:
     emoji: "🎯"
     requires:
       env: ["FEISHU_OKR_ENABLED"]
+      bins: ["lark-cli"]
       permissions:
         - okr:okr.period:readonly
         - okr:okr.content:readonly
         - contact:user.base:readonly
         - contact:user.employee_id:readonly
-    install: []
+    install:
+      - id: "npm"
+        kind: "npm"
+        package: "@larksuite/cli"
+        bins: ["lark-cli"]
+        label: "Install Lark CLI (npm)"
 ---
 
 # OKR Goal Setting
 
 辅助管理者确保OKR目标设定合理、上下级对齐清晰、符合SMART原则。飞书智能伙伴环境下自动识别用户身份和主管信息，检查上级/平级同期目标关联纠偏。不计算完整KPI评分，只辅助20%季度任务目标部分的目标设定。
+
+## ⚠️ 安装检测与飞书CLI备用方案
+
+### 飞书CLI安装检测
+
+**执行Skill前必须检测飞书CLI是否已安装：**
+
+```bash
+# 检测飞书CLI是否安装
+lark-cli --version
+```
+
+**如果未安装，引导用户安装：**
+
+```
+检测到飞书CLI未安装，需要先安装飞书CLI才能获取OKR数据。
+
+安装步骤：
+1. 安装飞书CLI: npm install -g @larksuite/cli
+2. 安装Skills: npx skills add larksuite/cli -y -g
+3. 初始化配置: lark-cli config init --new
+4. 登录授权: lark-cli auth login --recommend
+
+请按以上步骤安装后，重新运行本Skill。
+```
+
+### 数据获取策略：优先飞书智能伙伴，备用飞书CLI
+
+**获取OKR数据时采用双策略：**
+
+| 策略 | 执行顺序 | 说明 |
+|------|----------|------|
+| **优先策略** | 1 | 尝试使用飞书智能伙伴自身能力获取OKR信息 |
+| **备用策略** | 2 | 如果优先策略失败，使用 `lark-cli` 命令获取 |
+
+**具体执行逻辑：**
+
+1. **尝试飞书智能伙伴自动获取：**
+   ```
+   请获取用户当前周期的OKR目标和KR详情。
+   ```
+
+2. **如果失败（返回错误或空数据），启用飞书CLI备用方案：**
+   ```bash
+   # 获取OKR周期列表
+   lark-cli okr cycle-list
+
+   # 获取周期详情
+   lark-cli okr cycle-detail --cycle-id "{cycleId}"
+
+   # 获取目标详情
+   lark-cli okr objectives get --objective-id "{objectiveId}"
+
+   # 获取关键结果
+   lark-cli okr key_results get --key-result-id "{krId}"
+   ```
+
+3. **如果飞书CLI也失败：**
+   ```
+   无法获取OKR数据，请检查：
+   1. 飞书CLI是否已安装并授权
+   2. 是否有 okr:okr.period:readonly 和 okr:okr.content:readonly 权限
+   3. 运行 lark-cli auth login --recommend 重新授权
+   ```
+
+---
 
 ## When to Use
 

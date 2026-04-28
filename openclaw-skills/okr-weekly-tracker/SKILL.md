@@ -6,12 +6,54 @@ metadata:
     emoji: "🔄"
     requires:
       env: ["FEISHU_OKR_ENABLED", "FEISHU_MAIL_ENABLED"]
-    install: []
+      bins: ["lark-cli"]
+    install:
+      - id: "npm"
+        kind: "npm"
+        package: "@larksuite/cli"
+        bins: ["lark-cli"]
+        label: "Install Lark CLI (npm)"
 ---
 
 # OKR Weekly Tracker
 
 员工自助安装的OKR周报自动化工具。安装后执行一次 `init` 命令，系统自动建立定时任务，每周扫描飞书活动、关联OKR进展、生成周报、尝试更新OKR、发邮件给PMO。全程自动化，无需每周手动触发。
+
+## ⚠️ 安装检测与飞书CLI备用方案
+
+### 飞书CLI安装检测
+
+**执行 init 命令前必须检测飞书CLI是否已安装：**
+
+```bash
+lark-cli --version
+```
+
+**如果未安装，引导用户安装：**
+
+```
+检测到飞书CLI未安装，需要先安装才能获取OKR和飞书活动数据。
+
+安装步骤：
+1. npm install -g @larksuite/cli
+2. npx skills add larksuite/cli -y -g
+3. lark-cli config init --new
+4. lark-cli auth login --recommend
+
+安装完成后重新运行 init 命令。
+```
+
+### 数据获取策略：优先飞书智能伙伴，备用飞书CLI
+
+| 数据类型 | 优先策略 | 备用策略（lark-cli） |
+|----------|----------|----------------------|
+| OKR周期/目标/KR | 飞书智能伙伴自动获取 | `lark-cli okr cycle-list/detail` |
+| 飞书文档 | 飞书智能伙伴自动搜索 | `lark-cli docs +search +fetch` |
+| 会议纪要 | 飞书智能伙伴自动搜索 | `lark-cli minutes +search` |
+| 聊天记录 | 飞书智能伙伴自动搜索 | `lark-cli im +messages-search` |
+| 发送邮件 | 飞书智能伙伴自动发送 | `lark-cli mail +send` |
+
+---
 
 ## When to Use
 

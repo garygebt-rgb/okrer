@@ -6,6 +6,7 @@ metadata:
     emoji: "📝"
     requires:
       env: ["FEISHU_OKR_ENABLED", "FEISHU_DOCS_ENABLED"]
+      bins: ["lark-cli"]
       permissions:
         - okr:okr.period:readonly
         - okr:okr.content:readonly
@@ -14,12 +15,54 @@ metadata:
         - vc:minute:readonly
         - im:message:readonly
         - wiki:wiki:readonly
-    install: []
+    install:
+      - id: "npm"
+        kind: "npm"
+        package: "@larksuite/cli"
+        bins: ["lark-cli"]
+        label: "Install Lark CLI (npm)"
 ---
 
 # OKR Review Scoring
 
 实现期末OKR评审评分，**整合多源证据**：周报内容（来自 okr-weekly-tracker）、手动案例链接、飞书活动记录自动扫描、人效月报表数据。解析用户自述文档(含截图)，验证证据，计算评分，生成评审报告。不计算完整KPI评分，只提供评分建议供人类参考。
+
+## ⚠️ 安装检测与飞书CLI备用方案
+
+### 飞书CLI安装检测
+
+**执行Skill前必须检测飞书CLI是否已安装：**
+
+```bash
+lark-cli --version
+```
+
+**如果未安装，引导用户安装：**
+
+```
+检测到飞书CLI未安装，需要先安装才能获取OKR和飞书活动数据。
+
+安装步骤：
+1. npm install -g @larksuite/cli
+2. npx skills add larksuite/cli -y -g
+3. lark-cli config init --new
+4. lark-cli auth login --recommend
+
+安装完成后重新运行本Skill。
+```
+
+### 数据获取策略：优先飞书智能伙伴，备用飞书CLI
+
+| 数据类型 | 优先策略 | 备用策略（lark-cli） |
+|----------|----------|----------------------|
+| OKR周期/目标/KR/指标 | 飞书智能伙伴自动获取 | `lark-cli okr cycle-list/detail/objectives/key_results/indicators` |
+| 周报文档 | 飞书智能伙伴自动搜索 | `lark-cli docs +search +fetch` |
+| 飞书文档活动 | 飞书智能伙伴自动搜索 | `lark-cli docs +search` |
+| 会议纪要 | 飞书智能伙伴自动搜索 | `lark-cli minutes +search` |
+| 聊天记录 | 飞书智能伙伴自动搜索 | `lark-cli im +messages-search` |
+| Wiki/人效表 | 飞书智能伙伴自动读取 | `lark-cli wiki nodes list` |
+
+---
 
 ## When to Use
 
